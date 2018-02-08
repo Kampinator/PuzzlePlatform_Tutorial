@@ -33,8 +33,13 @@ void APMovingPlatform::Tick(float Deltatime)
 	if (HasAuthority())
 	{
 		FVector Location = GetActorLocation();
-		// Location is X centimeters per seconds
-		Location += FVector(PlatformSpeed * Deltatime, 0, 0);
+		// Change local position to Global position of this Vector.
+		FVector GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
+		// Direction vector is Vector B - Vector A
+		FVector Direction = (GlobalTargetLocation - Location).GetSafeNormal();
+				
+		// Location is X centimeters per seconds in specific direction
+		Location += PlatformSpeed * Deltatime * Direction;
 		SetActorLocation(Location);
 	}
 
