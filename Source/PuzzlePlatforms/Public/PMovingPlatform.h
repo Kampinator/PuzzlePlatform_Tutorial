@@ -16,8 +16,10 @@ class PUZZLEPLATFORMS_API APMovingPlatform : public AStaticMeshActor
 
 public:
 	APMovingPlatform();
+	
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void Tick(float Deltatime) override;
 
 private:

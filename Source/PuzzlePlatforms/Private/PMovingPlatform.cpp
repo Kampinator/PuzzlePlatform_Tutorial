@@ -10,6 +10,22 @@ APMovingPlatform::APMovingPlatform()
 	PlatformSpeed = 100;
 }
 
+
+
+
+
+void APMovingPlatform::BeginPlay()
+{
+	Super::BeginPlay();
+	if (HasAuthority())
+	{
+		// We are going to replicate this actors movement.
+		SetReplicates(true);
+		SetReplicateMovement(true);
+	}
+	
+}
+
 void APMovingPlatform::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
