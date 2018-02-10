@@ -6,6 +6,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "PMovingPlatform.generated.h"
 
+class APPlatformTrigger;
+
 /**
  * 
  */
@@ -33,7 +35,11 @@ private:
 	FVector GlobalTargetLocation;
 
 	bool Forward;
-	
+
+	UPROPERTY(EditInstanceOnly)
+	bool MovedThroughTrigger;
+	UPROPERTY(EditInstanceOnly, meta = (editcondition = MovedThroughTrigger))
+	APPlatformTrigger* ActivatingTrigger;
 
 
 

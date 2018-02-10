@@ -16,14 +16,20 @@ APPlatformTrigger::APPlatformTrigger()
 	TriggerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerMesh"));
 	TriggerMesh->SetupAttachment(RealRoot);
 
+	
+
 
 }
 
 // Called when the game starts or when spawned
 void APPlatformTrigger::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
+	if(HasAuthority())
+	{
+	//	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &APPlatformTrigger::OnOverlapBegin);
+	//	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &APPlatformTrigger::OnOverlapEnd);
+	}
 	
 }
 
@@ -31,6 +37,32 @@ void APPlatformTrigger::BeginPlay()
 void APPlatformTrigger::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
+
+// Called every frame
+/*
+void APPlatformTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped"));
+}
+
+void APPlatformTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("End Overlapped"));
+}*/
+
+void APPlatformTrigger::NotifyActorBeginOverlap(AActor * OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Overlapped2"));
+}
+
+void APPlatformTrigger::NotifyActorEndOverlap(AActor * OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("End Overlapped2"));
+}
+
+
+
+
+
 
