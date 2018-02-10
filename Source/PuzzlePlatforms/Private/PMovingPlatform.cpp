@@ -2,6 +2,7 @@
 
 #include "Public/PMovingPlatform.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Public/PPlatformTrigger.h"
 
 APMovingPlatform::APMovingPlatform()
 {
@@ -41,13 +42,23 @@ void APMovingPlatform::Tick(float Deltatime)
 	// Are we server
 	if (HasAuthority())
 	{	
+		bCanMove = false;
 		FVector Direction = (GlobalTargetLocation - GlobalStartLocation).GetSafeNormal();
 		// We compare if we are going forward or backward and are we at the Start or the End location. Then change the boolean
 		Forward && FVector((GlobalStartLocation - GetActorLocation())).Size() > FVector((GlobalStartLocation - GlobalTargetLocation)).Size() ? Forward = false : !Forward && FVector((GlobalTargetLocation - GetActorLocation())).Size() > FVector((GlobalTargetLocation - GlobalStartLocation)).Size() ? Forward = true : 0;
 		FVector Location = GetActorLocation();		
 		// Direction vector is Vector B - Vector A		
 		// Location is X centimeters per seconds in specific direction
-		Forward ? SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction)) : SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction *-1));
+		if (MovedThroughTrigger)
+		{
+			for (auto Trigger : ActivatingTriggers)
+			{
+				Trigger->GetIsOverlapped() ? bCanMove = true : 0;
+			}
+		}
+		
+		MovedThroughTrigger && bCanMove ? Forward ? SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction)) : SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction *-1)) : !MovedThroughTrigger ? Forward ? SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction)) : SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction *-1)) : 0;
+		//MovedThroughTrigger && ActivatingTrigger && ActivatingTrigger->GetIsOverlapped() ? Forward ? SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction)) : SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction *-1)) : !MovedThroughTrigger ? Forward ? SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction)) : SetActorLocation(GetActorLocation() + (PlatformSpeed * Deltatime * Direction *-1)) : 0;
 	}
 
 }

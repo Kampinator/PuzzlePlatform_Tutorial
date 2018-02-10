@@ -3,6 +3,7 @@
 #include "Public/PPlatformTrigger.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 APPlatformTrigger::APPlatformTrigger()
@@ -15,11 +16,15 @@ APPlatformTrigger::APPlatformTrigger()
 	TriggerBox->SetupAttachment(RealRoot);
 	TriggerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerMesh"));
 	TriggerMesh->SetupAttachment(RealRoot);
-
-	
-
-
 }
+
+void APPlatformTrigger::GetLifetimeReplicatedProps(TArray < FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(APPlatformTrigger, bIsOverlapped);
+}
+
+
 
 // Called when the game starts or when spawned
 void APPlatformTrigger::BeginPlay()
@@ -39,6 +44,11 @@ void APPlatformTrigger::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool APPlatformTrigger::GetIsOverlapped()
+{
+	return bIsOverlapped;
+}
+
 // Called every frame
 /*
 void APPlatformTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -53,12 +63,20 @@ void APPlatformTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor
 
 void APPlatformTrigger::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlapped2"));
+	//UE_LOG(LogTemp, Warning, TEXT("Overlapped2"));
+	if (HasAuthority())
+	{
+		bIsOverlapped = true;
+	}
+	
 }
 
 void APPlatformTrigger::NotifyActorEndOverlap(AActor * OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("End Overlapped2"));
+	if (HasAuthority())
+	{
+		bIsOverlapped = false;
+	}
 }
 
 

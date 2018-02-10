@@ -35,11 +35,12 @@ private:
 	FVector GlobalTargetLocation;
 
 	bool Forward;
+	bool bCanMove;
 
 	UPROPERTY(EditInstanceOnly)
 	bool MovedThroughTrigger;
 	UPROPERTY(EditInstanceOnly, meta = (editcondition = MovedThroughTrigger))
-	APPlatformTrigger* ActivatingTrigger;
+	TArray<APPlatformTrigger*> ActivatingTriggers;
 
 
 

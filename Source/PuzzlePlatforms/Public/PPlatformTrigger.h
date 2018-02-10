@@ -40,11 +40,15 @@ protected:
 	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
-	
+	UPROPERTY(Replicated)
+	bool bIsOverlapped;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	bool GetIsOverlapped();
+
 
 
 
