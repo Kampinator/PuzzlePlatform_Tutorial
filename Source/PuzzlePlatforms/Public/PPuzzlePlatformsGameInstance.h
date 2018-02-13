@@ -19,7 +19,7 @@ public:
 	virtual void Init() override;
 
 	UFUNCTION(exec)
-	void Host(FString Address);
+	void Host();
 
 	UFUNCTION(exec)
 	void Join(FString Address);
