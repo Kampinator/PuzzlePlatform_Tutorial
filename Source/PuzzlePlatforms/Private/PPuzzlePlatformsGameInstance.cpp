@@ -19,7 +19,6 @@ FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
 
 UPPuzzlePlatformsGameInstance::UPPuzzlePlatformsGameInstance()
 {
-	UE_LOG(LogTemp, Warning, TEXT("I am constructo"));
 	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
 	if (WidgetClass.Class != nullptr)
 	{
@@ -30,12 +29,11 @@ UPPuzzlePlatformsGameInstance::UPPuzzlePlatformsGameInstance()
 
 void UPPuzzlePlatformsGameInstance::Init()
 {
-	UE_LOG(LogTemp, Warning, TEXT("I am Int"));
+
 }
 
 void UPPuzzlePlatformsGameInstance::Host()
 {
-	GEngine->AddOnScreenDebugMessage(0, 2, FColor::Yellow, FString("hello"));
 	UWorld* World = GetWorld();
 	if (World)
 	{
@@ -54,6 +52,17 @@ void UPPuzzlePlatformsGameInstance::Join(FString Address)
 	}
 	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183"));
 	 
+}
+
+void UPPuzzlePlatformsGameInstance::LoadMenu()
+{
+	if (MenuClass)
+	{
+		
+		UUserWidget* Menu = CreateWidget<UUserWidget>(this, MenuClass);
+		Menu->AddToViewport();
+	}
+	
 }
 
 

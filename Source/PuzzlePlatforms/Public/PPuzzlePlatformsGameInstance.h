@@ -25,6 +25,9 @@ public:
 	UFUNCTION(exec)
 	void Join(FString Address);
 
+	UFUNCTION(BlueprintCallable)
+	void LoadMenu();
+
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> MenuClass;
