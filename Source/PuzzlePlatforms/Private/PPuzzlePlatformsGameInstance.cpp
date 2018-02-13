@@ -3,6 +3,8 @@
 #include "Public/PPuzzlePlatformsGameInstance.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
 
 static int32 CheatSuperJump = 0;
 FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
@@ -18,6 +20,12 @@ FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
 UPPuzzlePlatformsGameInstance::UPPuzzlePlatformsGameInstance()
 {
 	UE_LOG(LogTemp, Warning, TEXT("I am constructo"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
+	if (WidgetClass.Class != nullptr)
+	{
+		MenuClass = WidgetClass.Class;
+		UE_LOG(LogTemp, Warning, TEXT("Found Widget %s!"), *MenuClass->GetName());
+	}
 }
 
 void UPPuzzlePlatformsGameInstance::Init()

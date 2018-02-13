@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "PPuzzlePlatformsGameInstance.generated.h"
 
+class UUserWidget;
 /**
  * 
  */
@@ -23,6 +24,10 @@ public:
 
 	UFUNCTION(exec)
 	void Join(FString Address);
+
+private:
+	UPROPERTY()
+	TSubclassOf<UUserWidget> MenuClass;
 	
 	
 	
