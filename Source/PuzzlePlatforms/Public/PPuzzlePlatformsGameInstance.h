@@ -6,7 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "PPuzzlePlatformsGameInstance.generated.h"
 
-class UUserWidget;
 /**
  * 
  */
@@ -30,7 +29,7 @@ public:
 
 private:
 	UPROPERTY()
-	TSubclassOf<UUserWidget> MenuClass;
+	TSubclassOf<class UUserWidget> MenuClass;
 	
 	
 	

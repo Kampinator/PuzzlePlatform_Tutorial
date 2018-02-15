@@ -61,6 +61,18 @@ void UPPuzzlePlatformsGameInstance::LoadMenu()
 		
 		UUserWidget* Menu = CreateWidget<UUserWidget>(this, MenuClass);
 		Menu->AddToViewport();
+		APlayerController* PlayerController = GetFirstLocalPlayerController();
+		if (PlayerController)
+		{
+			FInputModeGameOnly
+			UE_LOG(LogTemp, Warning, TEXT("Loaded Menu"));
+			FInputModeUIOnly InputModeData;
+			InputModeData.SetWidgetToFocus(Menu->TakeWidget());
+			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+			PlayerController->SetInputMode(InputModeData);
+			PlayerController->bShowMouseCursor = true;
+		}
+
 	}
 	
 }
