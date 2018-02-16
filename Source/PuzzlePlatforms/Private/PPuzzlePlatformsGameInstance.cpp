@@ -48,7 +48,7 @@ void UPPuzzlePlatformsGameInstance::Join(FString Address)
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController)
 	{
-		PlayerController->ClientTravel(FString("1.1.1.2"), ETravelType::TRAVEL_Absolute);
+		PlayerController->ClientTravel(FString("192.168.1.100"), ETravelType::TRAVEL_Absolute);
 	}
 	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183"));
 	 
@@ -64,7 +64,6 @@ void UPPuzzlePlatformsGameInstance::LoadMenu()
 		APlayerController* PlayerController = GetFirstLocalPlayerController();
 		if (PlayerController)
 		{
-			FInputModeGameOnly
 			UE_LOG(LogTemp, Warning, TEXT("Loaded Menu"));
 			FInputModeUIOnly InputModeData;
 			InputModeData.SetWidgetToFocus(Menu->TakeWidget());
