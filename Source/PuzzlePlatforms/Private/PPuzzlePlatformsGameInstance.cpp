@@ -57,13 +57,13 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 	}
 }
 
-void UPPuzzlePlatformsGameInstance::Join_Implementation()
+void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController)
-	{
-		PlayerController->ClientTravel(FString("34324"), ETravelType::TRAVEL_Absolute);
+	{		
+		PlayerController->ClientTravel(FString(IPAddress), ETravelType::TRAVEL_Absolute);
 	}
 	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
 }

@@ -22,6 +22,26 @@ class PUZZLEPLATFORMS_API UPMainMenu : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
 	class UButton* JoinBtn;
 
+	UPROPERTY(meta = (BindWidget))
+	class UWidgetSwitcher* WidgetSwt;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* JoinMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* JoinGameButtonn;
+
+	UPROPERTY(meta = (BindWidget))
+	class UEditableTextBox* IpAddressText;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Button_BackToMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWidget* HostMenu;
+
+	
+
 public:
 	// Remember to call super with override!
 	virtual bool Initialize() override;
@@ -37,6 +57,12 @@ protected:
 
 	UFUNCTION()
 	void JoinButtonClicked();
+
+	UFUNCTION()
+	void JoinGameButtonClicked();
+
+	UFUNCTION()
+	void BackToMenu();
 
 
 
