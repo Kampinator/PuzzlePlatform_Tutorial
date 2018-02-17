@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "MenuSystem/PMainMenu.h"
+#include "OnlineSubsystem.h"
 
 static int32 CheatSuperJump = 0;
 FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
@@ -30,14 +31,24 @@ UPPuzzlePlatformsGameInstance::UPPuzzlePlatformsGameInstance()
 
 void UPPuzzlePlatformsGameInstance::Init()
 {
+	// Get pointer to OnlineSubsystem
+	IOnlineSubsystem* OnlineSubSystem = IOnlineSubsystem::Get();
+	if (OnlineSubSystem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found Subsystem! %s!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Didn't found Subsystem! "));
+	}
+
+	
+
 
 }
 
 
-
-
-
-void UPPuzzlePlatformsGameInstance::LoadMenu()
+void UPPuzzlePlatformsGameInstance::LoadMenuWidget()
 {
 	if (MenuClass)
 	{	

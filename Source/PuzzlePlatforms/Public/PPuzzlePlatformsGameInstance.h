@@ -26,7 +26,7 @@ public:
 
 
 	UFUNCTION(BlueprintCallable)
-	void LoadMenu();
+	void LoadMenuWidget();
 
 private:
 	UPROPERTY()
