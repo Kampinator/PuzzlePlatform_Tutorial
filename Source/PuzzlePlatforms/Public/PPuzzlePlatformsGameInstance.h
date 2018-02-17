@@ -29,6 +29,7 @@ public:
 
 	IOnlineSessionPtr SessionInterface;
 	void SessionCreated(FName SessionName, bool CreatedSuccesfully);
+	void SessionDestroyed(FName SessionName, bool CreatedSuccesfully);
 
 
 private:

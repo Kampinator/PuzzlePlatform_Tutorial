@@ -9,6 +9,7 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 
+#define SESSION_NAME "MySession"
 
 static int32 CheatSuperJump = 0;
 FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
@@ -16,8 +17,6 @@ FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
 	CheatSuperJump,
 	TEXT("Allows user to jump higher"),
 	ECVF_SetByConsole);
-
-
 
 
 
@@ -41,8 +40,8 @@ void UPPuzzlePlatformsGameInstance::Init()
 		SessionInterface = OnlineSubSystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-			SessionInterface->DestroySession("My Session");
-			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
+				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
+				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);			
 		}
 	}
 	else
@@ -72,11 +71,17 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 	if (SessionInterface.IsValid())
 	{
 		FOnlineSessionSettings SessionSettings;
-		SessionInterface->CreateSession(0, TEXT("My Session"), SessionSettings);
+
+		FNamedOnlineSession* SessionName = SessionInterface->GetNamedSession(SESSION_NAME);
+		if (SessionName)
+		{
+			SessionInterface->DestroySession(SESSION_NAME);
+		}
+		else
+		{
+			SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
+		}	
 	}
-	
-
-
 }
 
 void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
@@ -106,6 +111,12 @@ void UPPuzzlePlatformsGameInstance::SessionCreated(FName SessionName, bool Creat
 	else
 	UE_LOG(LogTemp, Warning, TEXT("Cannot create session"));
 
+}
+
+void UPPuzzlePlatformsGameInstance::SessionDestroyed(FName SessionName, bool CreatedSuccesfully)
+{
+	FOnlineSessionSettings SessionSettings;
+	SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
 }
 
 
