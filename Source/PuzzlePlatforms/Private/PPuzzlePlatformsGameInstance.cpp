@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "MenuSystem/PMainMenu.h"
 
 static int32 CheatSuperJump = 0;
 FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
@@ -32,7 +33,21 @@ void UPPuzzlePlatformsGameInstance::Init()
 
 }
 
-void UPPuzzlePlatformsGameInstance::Host()
+
+
+
+
+void UPPuzzlePlatformsGameInstance::LoadMenu()
+{
+	if (MenuClass)
+	{	
+		Menu = CreateWidget<UPMainMenu>(this, MenuClass);
+		Menu->Setup();
+	}
+	
+}
+
+void UPPuzzlePlatformsGameInstance::Host_Implementation() 
 {
 	UWorld* World = GetWorld();
 	if (World)
@@ -42,40 +57,16 @@ void UPPuzzlePlatformsGameInstance::Host()
 	}
 }
 
-void UPPuzzlePlatformsGameInstance::Join(FString Address)
+void UPPuzzlePlatformsGameInstance::Join_Implementation()
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController)
 	{
-		PlayerController->ClientTravel(FString("192.168.1.100"), ETravelType::TRAVEL_Absolute);
+		PlayerController->ClientTravel(FString("34324"), ETravelType::TRAVEL_Absolute);
 	}
-	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183"));
-	 
+	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
 }
-
-void UPPuzzlePlatformsGameInstance::LoadMenu()
-{
-	if (MenuClass)
-	{
-		
-		UUserWidget* Menu = CreateWidget<UUserWidget>(this, MenuClass);
-		Menu->AddToViewport();
-		APlayerController* PlayerController = GetFirstLocalPlayerController();
-		if (PlayerController)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Loaded Menu"));
-			FInputModeUIOnly InputModeData;
-			InputModeData.SetWidgetToFocus(Menu->TakeWidget());
-			InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-			PlayerController->SetInputMode(InputModeData);
-			PlayerController->bShowMouseCursor = true;
-		}
-
-	}
-	
-}
-
 
 
 

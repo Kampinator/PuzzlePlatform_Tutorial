@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "MenuSystem/PMenuInterface.h"
 #include "PMainMenu.generated.h"
 
 /**
@@ -25,6 +26,10 @@ public:
 	// Remember to call super with override!
 	virtual bool Initialize() override;
 	void Construct();
+	void Setup();
+
+	virtual void OnLevelRemovedFromWorld(class ULevel* InLevel, class UWorld* InWorld) override;
+	
 
 protected:
 	UFUNCTION()
@@ -32,6 +37,10 @@ protected:
 
 	UFUNCTION()
 	void JoinButtonClicked();
+
+
+
+	
 	
 	
 	
