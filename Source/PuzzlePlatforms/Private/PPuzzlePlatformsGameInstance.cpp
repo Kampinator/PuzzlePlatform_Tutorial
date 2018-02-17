@@ -7,6 +7,8 @@
 #include "Blueprint/UserWidget.h"
 #include "MenuSystem/PMainMenu.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
+
 
 static int32 CheatSuperJump = 0;
 FAutoConsoleVariableRef CVARCheatSuperJumpfaa(
@@ -36,10 +38,11 @@ void UPPuzzlePlatformsGameInstance::Init()
 	if (OnlineSubSystem)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Found Subsystem! %s!"), *OnlineSubSystem->GetSubsystemName().ToString());
-		IOnlineSessionPtr SessionInterface = OnlineSubSystem->GetSessionInterface();
+		SessionInterface = OnlineSubSystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Found SessionInterface!"));
+			SessionInterface->DestroySession("My Session");
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
 		}
 	}
 	else
@@ -63,14 +66,17 @@ void UPPuzzlePlatformsGameInstance::LoadMenuWidget()
 	
 }
 
+
 void UPPuzzlePlatformsGameInstance::Host_Implementation() 
 {
-	UWorld* World = GetWorld();
-	if (World)
+	if (SessionInterface.IsValid())
 	{
-		World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
-		GEngine->AddOnScreenDebugMessage(0, 2, FColor::Yellow, FString::Printf(TEXT("World is valid")));
+		FOnlineSessionSettings SessionSettings;
+		SessionInterface->CreateSession(0, TEXT("My Session"), SessionSettings);
 	}
+	
+
+
 }
 
 void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
@@ -84,5 +90,22 @@ void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
 	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
 }
 
+
+void UPPuzzlePlatformsGameInstance::SessionCreated(FName SessionName, bool CreatedSuccesfully)
+{
+	if (CreatedSuccesfully)
+	{
+		UWorld* World = GetWorld();
+		if (World)
+		{
+		World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+		GEngine->AddOnScreenDebugMessage(0, 2, FColor::Yellow, FString::Printf(TEXT("World is valid")));
+		}
+	}
+
+	else
+	UE_LOG(LogTemp, Warning, TEXT("Cannot create session"));
+
+}
 
 

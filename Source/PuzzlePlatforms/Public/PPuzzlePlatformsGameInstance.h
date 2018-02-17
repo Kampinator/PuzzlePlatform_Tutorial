@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "MenuSystem/PMenuInterface.h"
+#include "OnlineSessionInterface.h"
 #include "PPuzzlePlatformsGameInstance.generated.h"
 
 /**
@@ -23,14 +24,18 @@ public:
 	void Host_Implementation();
 	void Join_Implementation(FString& IPAddress);
 	
-
-
 	UFUNCTION(BlueprintCallable)
 	void LoadMenuWidget();
+
+	IOnlineSessionPtr SessionInterface;
+	void SessionCreated(FName SessionName, bool CreatedSuccesfully);
+
 
 private:
 	UPROPERTY()
 	TSubclassOf<class UUserWidget> MenuClass;
 
 	class UPMainMenu* Menu;	
+	
+	
 };
