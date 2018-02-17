@@ -35,7 +35,12 @@ void UPPuzzlePlatformsGameInstance::Init()
 	IOnlineSubsystem* OnlineSubSystem = IOnlineSubsystem::Get();
 	if (OnlineSubSystem)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Found Subsystem! %s!"));
+		UE_LOG(LogTemp, Warning, TEXT("Found Subsystem! %s!"), *OnlineSubSystem->GetSubsystemName().ToString());
+		IOnlineSessionPtr SessionInterface = OnlineSubSystem->GetSessionInterface();
+		if (SessionInterface.IsValid())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found SessionInterface!"));
+		}
 	}
 	else
 	{
