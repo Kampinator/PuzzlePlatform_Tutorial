@@ -4,9 +4,26 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
+#include "Components/ScrollBox.h"
 #include "MenuSystem/PMenuInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/ConstructorHelpers.h"
+#include "MenuSystem/PServerTextWidget.h"
 
+
+
+// Menu = CreateWidget<UPMainMenu>(this, MenuClass);
+
+
+UPMainMenu::UPMainMenu(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass(TEXT("/Game/MenuSystem/WBP_ServerText"));
+	if (WidgetClass.Class != nullptr)
+	{
+		ServerTextClass = WidgetClass.Class;
+		//UE_LOG(LogTemp, Warning, TEXT("Found Widget %s!"), *MenuClass->GetName());
+	}
+}
 
 bool UPMainMenu::Initialize()
 {
@@ -70,8 +87,12 @@ void UPMainMenu::BackToMenu()
 
 void UPMainMenu::JoinGameButtonClicked()
 {
-	FString IPText = *(IpAddressText->GetText().ToString());
-	IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
+	
+	UPServerTextWidget* row = CreateWidget<UPServerTextWidget>(this->GetWorld(), ServerTextClass);
+	ServerListScrollBox->AddChild(row);
+
+	//FString IPText = *(IpAddressText->GetText().ToString());
+	//IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
 }
 
 

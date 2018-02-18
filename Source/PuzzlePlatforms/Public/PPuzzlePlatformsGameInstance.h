@@ -30,6 +30,8 @@ public:
 	IOnlineSessionPtr SessionInterface;
 	void SessionCreated(FName SessionName, bool CreatedSuccesfully);
 	void SessionDestroyed(FName SessionName, bool CreatedSuccesfully);
+	void SessionsFound(bool FoundSessions);
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 
 
 private:

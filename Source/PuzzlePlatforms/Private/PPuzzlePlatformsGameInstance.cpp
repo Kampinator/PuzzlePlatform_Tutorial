@@ -9,6 +9,10 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 
+
+#include "VoiceInterface.h"
+#include "VoiceDataCommon.h"
+
 #define SESSION_NAME "MySession"
 
 static int32 CheatSuperJump = 0;
@@ -41,17 +45,25 @@ void UPPuzzlePlatformsGameInstance::Init()
 		if (SessionInterface.IsValid())
 		{
 				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
-				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);			
+				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);	
+				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionsFound);
+				SessionSearch = MakeShareable(new FOnlineSessionSearch());
+				if (SessionSearch.IsValid())
+				{
+					SessionSearch->bIsLanQuery = true; // Search only LAN. If not defined, search all.
+					SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+				}
 		}
+
+	
+
+
+
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Didn't found Subsystem! "));
 	}
-
-	
-
-
 }
 
 
@@ -79,6 +91,9 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 		}
 		else
 		{
+			SessionSettings.bIsLANMatch = true;
+			SessionSettings.NumPublicConnections = 2;
+			SessionSettings.bShouldAdvertise = true;
 			SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
 		}	
 	}
@@ -116,7 +131,31 @@ void UPPuzzlePlatformsGameInstance::SessionCreated(FName SessionName, bool Creat
 void UPPuzzlePlatformsGameInstance::SessionDestroyed(FName SessionName, bool CreatedSuccesfully)
 {
 	FOnlineSessionSettings SessionSettings;
+	SessionSettings.bIsLANMatch = true;
+	SessionSettings.NumPublicConnections = 2;
+	// Game shows in game list.
+	SessionSettings.bShouldAdvertise = true;
+	// Create the session.
 	SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
+}
+
+void UPPuzzlePlatformsGameInstance::SessionsFound(bool FoundSessions)
+{
+	if (FoundSessions)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Finished found sessions"));
+		TArray<FOnlineSessionSearchResult> SearchResults = SessionSearch->SearchResults;
+		for (auto Result : SearchResults)
+		{
+			FString SessionID = Result.Session.GetSessionIdStr();
+			UE_LOG(LogTemp, Warning, TEXT("Session : %s"), *SessionID);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Sessions Found"));
+	}
+
 }
 
 

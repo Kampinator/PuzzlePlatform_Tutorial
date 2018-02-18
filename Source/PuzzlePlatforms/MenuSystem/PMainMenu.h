@@ -32,17 +32,18 @@ class PUZZLEPLATFORMS_API UPMainMenu : public UUserWidget
 	class UButton* JoinGameButtonn;
 
 	UPROPERTY(meta = (BindWidget))
-	class UEditableTextBox* IpAddressText;
-
-	UPROPERTY(meta = (BindWidget))
 	class UButton* Button_BackToMenu;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWidget* HostMenu;
 
+	UPROPERTY(meta = (BindWidget))
+	class UScrollBox* ServerListScrollBox;
+
 	
 
 public:
+	UPMainMenu(const FObjectInitializer& ObjectInitializer);
 	// Remember to call super with override!
 	virtual bool Initialize() override;
 	void Construct();
@@ -63,6 +64,9 @@ protected:
 
 	UFUNCTION()
 	void BackToMenu();
+
+private:
+	TSubclassOf<class UUserWidget> ServerTextClass;
 
 
 
