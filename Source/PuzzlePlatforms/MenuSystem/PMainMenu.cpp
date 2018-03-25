@@ -5,10 +5,12 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
 #include "Components/ScrollBox.h"
+#include "Components/TextBlock.h"
 #include "MenuSystem/PMenuInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 #include "MenuSystem/PServerTextWidget.h"
+
 
 
 
@@ -77,6 +79,7 @@ void UPMainMenu::JoinButtonClicked()
 {
 	//IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()));
 	WidgetSwt->SetActiveWidget(JoinMenu);
+	IPMenuInterface::Execute_RefreshServerList(UGameplayStatics::GetGameInstance(GetWorld()));
 }
 
 void UPMainMenu::BackToMenu()
@@ -85,14 +88,23 @@ void UPMainMenu::BackToMenu()
 	WidgetSwt->SetActiveWidget(HostMenu);
 }
 
+void UPMainMenu::SetServerList(TArray<FString> ServerNames)
+{
+	ServerListScrollBox->ClearChildren();
+	for (const FString& ServerName : ServerNames)
+	{
+		UPServerTextWidget* Row = CreateWidget<UPServerTextWidget>(this->GetWorld(), ServerTextClass);
+		if (!ensure(Row != nullptr)) return;
+		Row->ServerName->SetText(FText::FromString(ServerName));
+		ServerListScrollBox->AddChild(Row);
+	}
+}
+
+
 void UPMainMenu::JoinGameButtonClicked()
 {
-	
-	UPServerTextWidget* row = CreateWidget<UPServerTextWidget>(this->GetWorld(), ServerTextClass);
-	ServerListScrollBox->AddChild(row);
-
-	//FString IPText = *(IpAddressText->GetText().ToString());
-	//IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
+	FString IPText = "252.52.52";
+	IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
 }
 
 

@@ -14,3 +14,6 @@ void IPMenuInterface::Join_Implementation(FString& IPAddress)
 {
 }
 
+void IPMenuInterface::RefreshServerList_Implementation()
+{
+}

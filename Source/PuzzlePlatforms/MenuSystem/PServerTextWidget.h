@@ -13,8 +13,10 @@ UCLASS()
 class PUZZLEPLATFORMS_API UPServerTextWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-	
+
+public:
+	UPROPERTY(meta = (BindWidget = true))
+	class UTextBlock* ServerName;
 	
 	
 };

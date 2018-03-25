@@ -48,6 +48,7 @@ public:
 	virtual bool Initialize() override;
 	void Construct();
 	void Setup();
+	void SetServerList(TArray<FString> ServerNames);
 
 	virtual void OnLevelRemovedFromWorld(class ULevel* InLevel, class UWorld* InWorld) override;
 	

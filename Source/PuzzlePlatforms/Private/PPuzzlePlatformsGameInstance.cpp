@@ -44,21 +44,11 @@ void UPPuzzlePlatformsGameInstance::Init()
 		SessionInterface = OnlineSubSystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
-				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);	
-				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionsFound);
-				SessionSearch = MakeShareable(new FOnlineSessionSearch());
-				if (SessionSearch.IsValid())
-				{
-					SessionSearch->bIsLanQuery = true; // Search only LAN. If not defined, search all.
-					SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
-				}
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
+			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);
+			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionsFound);
+			
 		}
-
-	
-
-
-
 	}
 	else
 	{
@@ -101,6 +91,12 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 
 void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
 {
+	if (Menu)
+	{
+		RefreshServerList_Implementation();
+		//Menu->SetServerList({"Test1", "Test2"});
+	}
+	/*
 	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (PlayerController)
@@ -108,6 +104,7 @@ void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
 		PlayerController->ClientTravel(FString(IPAddress), ETravelType::TRAVEL_Absolute);
 	}
 	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
+	*/
 }
 
 
@@ -141,15 +138,19 @@ void UPPuzzlePlatformsGameInstance::SessionDestroyed(FName SessionName, bool Cre
 
 void UPPuzzlePlatformsGameInstance::SessionsFound(bool FoundSessions)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Trying to find sessions"));
 	if (FoundSessions)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Finished found sessions"));
+		//UE_LOG(LogTemp, Warning, TEXT("Finished found sessions"));
 		TArray<FOnlineSessionSearchResult> SearchResults = SessionSearch->SearchResults;
+		TArray<FString> ServerNames;
 		for (auto Result : SearchResults)
 		{
+			ServerNames.Add(Result.GetSessionIdStr());
 			FString SessionID = Result.Session.GetSessionIdStr();
-			UE_LOG(LogTemp, Warning, TEXT("Session : %s"), *SessionID);
+			//UE_LOG(LogTemp, Warning, TEXT("Session : %s"), *SessionID);
 		}
+		Menu->SetServerList(ServerNames);
 	}
 	else
 	{
@@ -157,5 +158,16 @@ void UPPuzzlePlatformsGameInstance::SessionsFound(bool FoundSessions)
 	}
 
 }
+
+void UPPuzzlePlatformsGameInstance::RefreshServerList_Implementation()
+{
+	SessionSearch = MakeShareable(new FOnlineSessionSearch());
+	if (SessionSearch.IsValid())
+	{
+		SessionSearch->bIsLanQuery = true; // Search only LAN. If not defined, search all.
+		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+	}
+}
+
 
 

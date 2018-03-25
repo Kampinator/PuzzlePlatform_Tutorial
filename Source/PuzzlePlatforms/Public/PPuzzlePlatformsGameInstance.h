@@ -23,6 +23,7 @@ public:
 	// Interface functions
 	void Host_Implementation();
 	void Join_Implementation(FString& IPAddress);
+	void RefreshServerList_Implementation();
 	
 	UFUNCTION(BlueprintCallable)
 	void LoadMenuWidget();
