@@ -91,18 +91,33 @@ void UPMainMenu::BackToMenu()
 void UPMainMenu::SetServerList(TArray<FString> ServerNames)
 {
 	ServerListScrollBox->ClearChildren();
+	uint32 i = 0;
 	for (const FString& ServerName : ServerNames)
 	{
 		UPServerTextWidget* Row = CreateWidget<UPServerTextWidget>(this->GetWorld(), ServerTextClass);
 		if (!ensure(Row != nullptr)) return;
 		Row->ServerName->SetText(FText::FromString(ServerName));
+		Row->Setup(this, i);
+		++i;
 		ServerListScrollBox->AddChild(Row);
 	}
 }
 
+void UPMainMenu::SelectIndex(uint32 Index)
+{
+	SelectedIndex = Index;
+}
 
 void UPMainMenu::JoinGameButtonClicked()
 {
+	if (SelectedIndex.IsSet())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index: %d"), SelectedIndex.GetValue());
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index not set"));
+	}
+
 	FString IPText = "252.52.52";
 	IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
 }

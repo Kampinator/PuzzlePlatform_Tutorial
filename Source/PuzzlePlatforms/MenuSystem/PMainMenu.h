@@ -49,9 +49,10 @@ public:
 	void Construct();
 	void Setup();
 	void SetServerList(TArray<FString> ServerNames);
+	void SelectIndex(uint32 Index);
 
 	virtual void OnLevelRemovedFromWorld(class ULevel* InLevel, class UWorld* InWorld) override;
-	
+	TOptional<uint32> SelectedIndex;
 
 protected:
 	UFUNCTION()
@@ -65,6 +66,10 @@ protected:
 
 	UFUNCTION()
 	void BackToMenu();
+
+	
+
+
 
 private:
 	TSubclassOf<class UUserWidget> ServerTextClass;

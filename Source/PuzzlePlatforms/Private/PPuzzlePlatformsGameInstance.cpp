@@ -91,11 +91,9 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 
 void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
 {
-	if (Menu)
-	{
-		RefreshServerList_Implementation();
-		//Menu->SetServerList({"Test1", "Test2"});
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
+	Menu->SetServerList({ "Moikka", "Juuh" });
+
 	/*
 	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
