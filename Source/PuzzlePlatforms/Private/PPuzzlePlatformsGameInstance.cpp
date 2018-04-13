@@ -8,7 +8,7 @@
 #include "MenuSystem/PMainMenu.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
-
+#include "OnlineSessionInterface.h"
 
 #include "VoiceInterface.h"
 #include "VoiceDataCommon.h"
@@ -47,7 +47,7 @@ void UPPuzzlePlatformsGameInstance::Init()
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionCreated);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionDestroyed);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::SessionsFound);
-			
+			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPPuzzlePlatformsGameInstance::OnJoinSessionComplete);
 		}
 	}
 	else
@@ -81,29 +81,62 @@ void UPPuzzlePlatformsGameInstance::Host_Implementation()
 		}
 		else
 		{
+			FOnlineSessionSettings SessionSettings;
 			SessionSettings.bIsLANMatch = true;
 			SessionSettings.NumPublicConnections = 2;
+			// Game shows in game list.
 			SessionSettings.bShouldAdvertise = true;
+			SessionSettings.bUsesPresence = true;
+			// Create the session.
 			SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
 		}	
 	}
 }
 
-void UPPuzzlePlatformsGameInstance::Join_Implementation(FString& IPAddress)
+void UPPuzzlePlatformsGameInstance::Join_Implementation(int32 index)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
-	Menu->SetServerList({ "Moikka", "Juuh" });
+	if (SessionInterface.IsValid())
+	{
+		if (Menu)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Jeje"));
+			Menu->SetServerList({ "Moikka", "Juuh" });
 
-	/*
-	UE_LOG(LogTemp, Warning, TEXT("Jeje"));
-	APlayerController* PlayerController = GetFirstLocalPlayerController();
-	if (PlayerController)
-	{		
-		PlayerController->ClientTravel(FString(IPAddress), ETravelType::TRAVEL_Absolute);
+			SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[index]);
+
+		}
 	}
-	//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
-	*/
 }
+
+void UPPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (SessionInterface.IsValid())
+	{
+		FString ConnectInfo;
+		if (SessionInterface->GetResolvedConnectString(SessionName, ConnectInfo))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("JoinCompleted"));
+			APlayerController* PlayerController = GetFirstLocalPlayerController();
+			if (PlayerController)
+			{
+				PlayerController->ClientTravel(ConnectInfo, ETravelType::TRAVEL_Absolute);
+			}
+			//UGameplayStatics::OpenLevel(this, FName("84.251.196.183")); 
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Could not get ConnectString"));
+		}
+
+
+	}
+
+}
+
+
+
+
+
 
 
 void UPPuzzlePlatformsGameInstance::SessionCreated(FName SessionName, bool CreatedSuccesfully)
@@ -130,6 +163,7 @@ void UPPuzzlePlatformsGameInstance::SessionDestroyed(FName SessionName, bool Cre
 	SessionSettings.NumPublicConnections = 2;
 	// Game shows in game list.
 	SessionSettings.bShouldAdvertise = true;
+	SessionSettings.bUsesPresence = true;
 	// Create the session.
 	SessionInterface->CreateSession(0, TEXT(SESSION_NAME), SessionSettings);
 }
@@ -144,6 +178,7 @@ void UPPuzzlePlatformsGameInstance::SessionsFound(bool FoundSessions)
 		TArray<FString> ServerNames;
 		for (auto Result : SearchResults)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Something found"));
 			ServerNames.Add(Result.GetSessionIdStr());
 			FString SessionID = Result.Session.GetSessionIdStr();
 			//UE_LOG(LogTemp, Warning, TEXT("Session : %s"), *SessionID);
@@ -162,7 +197,8 @@ void UPPuzzlePlatformsGameInstance::RefreshServerList_Implementation()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		SessionSearch->bIsLanQuery = true; // Search only LAN. If not defined, search all.
+		SessionSearch->MaxSearchResults = 1000;
+		//SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }

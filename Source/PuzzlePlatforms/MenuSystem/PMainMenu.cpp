@@ -94,6 +94,7 @@ void UPMainMenu::SetServerList(TArray<FString> ServerNames)
 	uint32 i = 0;
 	for (const FString& ServerName : ServerNames)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("FOUND SOMETHING"));
 		UPServerTextWidget* Row = CreateWidget<UPServerTextWidget>(this->GetWorld(), ServerTextClass);
 		if (!ensure(Row != nullptr)) return;
 		Row->ServerName->SetText(FText::FromString(ServerName));
@@ -113,13 +114,14 @@ void UPMainMenu::JoinGameButtonClicked()
 	if (SelectedIndex.IsSet())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected Index: %d"), SelectedIndex.GetValue());
+		IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), SelectedIndex.GetValue());
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Selected Index not set"));
 	}
 
-	FString IPText = "252.52.52";
-	IPMenuInterface::Execute_Join(UGameplayStatics::GetGameInstance(GetWorld()), IPText);	
+	
+
 }
 
 

@@ -22,7 +22,7 @@ public:
 
 	// Interface functions
 	void Host_Implementation();
-	void Join_Implementation(FString& IPAddress);
+	void Join_Implementation(int32 index);
 	void RefreshServerList_Implementation();
 	
 	UFUNCTION(BlueprintCallable)
@@ -33,6 +33,9 @@ public:
 	void SessionDestroyed(FName SessionName, bool CreatedSuccesfully);
 	void SessionsFound(bool FoundSessions);
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
 
 
 private:

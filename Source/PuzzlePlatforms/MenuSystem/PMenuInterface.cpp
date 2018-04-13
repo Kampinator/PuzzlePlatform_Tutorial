@@ -10,7 +10,7 @@ void IPMenuInterface::Host_Implementation()
 }
 
 
-void IPMenuInterface::Join_Implementation(FString& IPAddress)
+void IPMenuInterface::Join_Implementation(int32 index)
 {
 }
 

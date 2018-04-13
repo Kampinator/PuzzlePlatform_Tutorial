@@ -25,7 +25,7 @@ public:
 	void Host(); // This has empty implementation
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Menu System")
-	void Join(FString& IPAddress); // This has empty implementation
+	void Join(int32 index); // This has empty implementation
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Menu System")
 	void RefreshServerList(); // This has empty implementation
